@@ -40,12 +40,16 @@ current_link = driver.current_url
 req = requests.get(current_link)
 html = req.text
 soup = BeautifulSoup(html, 'html.parser')
-article_list = soup.find('div', {'id':'article'})
 
+article_list = soup.select('article > p > span')
 
 f = open('test1.txt', 'w', encoding='utf-8')
-f.write(article_list.get_text())
-f.close()
-print(article_list.get_text())
+for i in article_list:
+    f.write(i.get_text()+'\n')
+
+f.close()    
+
+print(article_list)
+
 
 
