@@ -4,6 +4,7 @@ import requests
 import time
 import json
 import os
+import csv
 
 # Chrome의 경우 | 아까 받은 chromedriver의 위치를 지정해준다.
 driver = webdriver.Chrome('D:\Works\PG_Works\Bible_Scraper\chromedriver')
@@ -13,7 +14,7 @@ driver.implicitly_wait(3)
 
 
 # url에 접근한다.
-driver.get('https://wol.jw.org/ko/wol/b/r8/lp-ko/nwt/1/50#study=discover')
+driver.get('https://wol.jw.org/ko/wol/b/r8/lp-ko/nwt/1/1#study=discover')
 #driver.get('https://wol.jw.org/en')
 
 
@@ -21,47 +22,22 @@ driver.get('https://wol.jw.org/ko/wol/b/r8/lp-ko/nwt/1/50#study=discover')
 # #현재 링크 확인
 current_link = driver.current_url
 
-# req = requests.get('https://wol.jw.org/ko/wol/b/r8/lp-ko/nwtsty/1/50#study=discover')
-# html = req.text
-# soup = BeautifulSoup(html, 'html.parser')
-#article_list = soup.find('div', {'id':'article'})
-#article_list = soup.findAll('span', {'class':'tt vl'})
 
+req = requests.get(current_link)
+html = req.text
+soup = BeautifulSoup(html, 'html.parser')
 
+article_list = soup.select('article > p > span')
+chapter = driver.find_elements_by_css_selector('#article > article > header > h1')[0].text.strip()
+title = driver.find_elements_by_css_selector('#article > article > header > h1')[0].text.strip()
+number=1
+f = open('{}{}.txt'.format(title, number), 'w', encoding='utf-8')
+for i in article_list:
+    temp = []
+    temp.append(title)
+    temp.append(str(number))
+    temp.append(i.get_text())
+    join_f = (join(temp))
+    f.write('\n'.join(join_f))
+f.close()
 
-# class chapter_scraper:
-#     article_list = soup.select('article > p > span')
-#     f = open('test4.txt', 'w', encoding='utf-8')
-#     for i in article_list:
-#         f.write(i.get_text()+'\n')
-#     f.close()
-
-
-# chapter_scraper
-
-
-# f = open('test3.txt', 'w', encoding='utf-8')
-
-# for i in article_list:
-#     f.write(i.get_text()+'\n')
-
-# # for i in article_list:
-# #     f.write(i.get_text())
-
-# f.close()    
-
-
- 
-# class group_scraping:
-#     while True:
-#         if driver.find_elements_by_css_selector('#publicationNavigation > div > ul > li.resultNavRight.disabled'):
-#             back_to_menu = driver.find_elements_by_css_selector('#menuBible')[0].click()
-#             break
-#         else:
-#             go_to_next = driver.find_elements_by_css_selector('#publicationNavigation > div > ul > li.resultNavRight')[0].click()
-
-# group_scraping
-
-
-title = driver.find_elements_by_css_selector('#article > article > header > h1')[0].get_text()
-print(title)
