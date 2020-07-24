@@ -1,5 +1,7 @@
 from selenium import webdriver
 from bs4 import BeautifulSoup
+import numpy as np
+import pandas as pd
 import requests
 import time
 import json
@@ -14,7 +16,7 @@ driver.implicitly_wait(3)
 
 
 # url에 접근한다.
-driver.get('https://wol.jw.org/ko/wol/b/r8/lp-ko/nwt/1/1#study=discover')
+driver.get('https://wol.jw.org/ko/wol/b/r8/lp-ko/nwt/1/20#study=discover')
 #driver.get('https://wol.jw.org/en')
 
 
@@ -23,21 +25,37 @@ driver.get('https://wol.jw.org/ko/wol/b/r8/lp-ko/nwt/1/1#study=discover')
 current_link = driver.current_url
 
 
-req = requests.get(current_link)
-html = req.text
-soup = BeautifulSoup(html, 'html.parser')
 
-article_list = soup.select('article > p > span')
-chapter = driver.find_elements_by_css_selector('#article > article > header > h1')[0].text.strip()
-title = driver.find_elements_by_css_selector('#article > article > header > h1')[0].text.strip()
-number=1
-f = open('{}{}.txt'.format(title, number), 'w', encoding='utf-8')
-for i in article_list:
-    temp = []
-    temp.append(title)
-    temp.append(str(number))
-    temp.append(i.get_text())
-    join_f = (join(temp))
-    f.write('\n'.join(join_f))
-f.close()
+#배열
+# data_list =[] 
+# column_names = ['title', 'chapter', 'verse', 'detail']
+
+
+
+def verse_scraping():
+    req = requests.get(current_link)
+    html = req.text 
+    soup = BeautifulSoup(html, 'html.parser')
+    title = driver.find_elements_by_css_selector('#article > article > header > h1')[0].text.strip()
+    chapter = soup.select('a.cl > strong')[0].get_text()
+    print(chapter)
+    article_list = soup.select('article > p > span')
+
+
+    f = open('{}{}.csv'.format(title, chapter), 'w', encoding='utf-8-sig', newline='')
+    for i in article_list:
+        verse = article_list.index(i)+1
+        temp = []
+        if article_list.index(i) == 0:
+            data_list = temp + ([title, chapter, verse, i.get_text()[len(str(chapter)):]])
+        else:
+            data_list = temp + ([title, chapter, verse, i.get_text()[len(str(verse)):]])
+        wr = csv.writer(f)
+        wr.writerow(data_list)
+    f.close()
+
+verse_scraping()
+
+        
+
 
