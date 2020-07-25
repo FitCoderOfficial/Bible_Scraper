@@ -41,6 +41,7 @@ time.sleep(1)
 def verse_scraping():
     #현재 링크 확인
     current_link = driver.current_url
+
     req = requests.get(current_link)
     html = req.text 
     soup = BeautifulSoup(html, 'html.parser')
@@ -60,8 +61,7 @@ def verse_scraping():
         wr.writerow(data_list)
     f.close()
 
-class group_scraping:
-
+def group_scraping():
     while True:
         if driver.find_elements_by_css_selector('#publicationNavigation > div > ul > li.resultNavRight.disabled'):
             verse_scraping()
@@ -71,7 +71,7 @@ class group_scraping:
             verse_scraping()
             go_to_next = driver.find_elements_by_css_selector('#publicationNavigation > div > ul > li.resultNavRight')[0].click()
 
-group_scraping
+group_scraping()
 
 
 
