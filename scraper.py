@@ -30,13 +30,24 @@ time.sleep(1)
 bible_list = driver.find_elements_by_css_selector('#article > article > div > nav > ul > li')[0].click()
 time.sleep(1)
 
-bible_start = driver.find_elements_by_class_name('bookLink')[0].click()
-time.sleep(1)
+def book_loop():
+    book_list = range(len(driver.find_elements_by_class_name('bookLink')))
+    for i in book_list:
+        bible_start = driver.find_elements_by_class_name('bookLink')[i].click()
+        chapter_start = driver.find_elements_by_css_selector('#article > article > div > nav > div > ul.grid.chapters.clearfix > li')[0].click()
+        group_scraping()
+        time.sleep(3)
 
-chapter_start = driver.find_elements_by_css_selector('#article > article > div > nav > div > ul.grid.chapters.clearfix > li')[0].click()
-time.sleep(1)
-
-
+def group_scraping():
+    while True:
+        if driver.find_elements_by_css_selector('#publicationNavigation > div > ul > li.resultNavRight.disabled'):
+            verse_scraping()
+            back_to_menu = driver.find_elements_by_css_selector('#menuBible')[0].click()
+            
+            break
+        else:
+            verse_scraping()
+            go_to_next = driver.find_elements_by_css_selector('#publicationNavigation > div > ul > li.resultNavRight')[0].click()
 
 def verse_scraping():
     #현재 링크 확인
@@ -61,20 +72,7 @@ def verse_scraping():
         wr.writerow(data_list)
     f.close()
 
-def group_scraping():
-    while True:
-        if driver.find_elements_by_css_selector('#publicationNavigation > div > ul > li.resultNavRight.disabled'):
-            verse_scraping()
-            back_to_menu = driver.find_elements_by_css_selector('#menuBible')[0].click()
-            break
-        else:
-            verse_scraping()
-            go_to_next = driver.find_elements_by_css_selector('#publicationNavigation > div > ul > li.resultNavRight')[0].click()
-
-group_scraping()
 
 
 
-
-
-
+book_loop()
