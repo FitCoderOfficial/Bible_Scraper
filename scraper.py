@@ -65,14 +65,12 @@ def verse_scraping():
         verse = article_list.index(i)+1
         temp = []
         if article_list.index(i) == 0:
-            data_list = temp + ([title, chapter, verse, i.get_text()[len(str(chapter)):]])
+            data_list = temp + ([title, chapter, verse, i.get_text().replace('+', '').replace('*', '')[len(str(chapter)):]])
         else:
-            data_list = temp + ([title, chapter, verse, i.get_text()[len(str(verse)):]])
+            data_list = temp + ([title, chapter, verse, i.get_text().replace('+', '').replace('*', '')[len(str(verse)):]])
         wr = csv.writer(f)
         wr.writerow(data_list)
     f.close()
-
-
 
 
 book_loop()
