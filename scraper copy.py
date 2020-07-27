@@ -16,7 +16,7 @@ driver.implicitly_wait(3)
 
 
 # url에 접근한다.
-driver.get('https://wol.jw.org/ko/wol/binav/r8/lp-ko/nwt')
+driver.get('https://wol.jw.org/ko/wol/b/r8/lp-ko/nwtsty/19/31#s=23&study=discover')
 #driver.get('https://wol.jw.org/en')
 
 
@@ -30,6 +30,27 @@ current_link = driver.current_url
 # data_list =[] 
 # column_names = ['title', 'chapter', 'verse', 'detail']
 
+req = requests.get(current_link)
+html = req.text 
+soup = BeautifulSoup(html, 'html.parser')
+
+
+
+verse_all = driver.find_elements_by_css_selector('#article > article')
+f = open('{title}{chapter}.csv', 'w', encoding='utf-8-sig', newline='')
+for i in verse_all:
+    # i.text.replace('+', '').replace('*', '')
+    temp = []
+    if verse_all.index(i) == 0:
+        data_list = temp + ([i.text])
+    else:
+        data_list = temp + ([i.text])
+    wr = csv.writer(f)
+    wr.writerow(data_list)
+f.close()
+
+
+# print (verse_all.string.text)
 
 
 # def verse_scraping():
@@ -39,10 +60,22 @@ current_link = driver.current_url
 #     title = driver.find_elements_by_css_selector('#article > article > header > h1')[0].text.strip()
 #     chapter = soup.select('a.cl > strong')[0].get_text()
 #     print(chapter)
+#     #v18-6-1-1
 #     article_list = soup.select('article > p > span')
-
+# #article > article
 
 #     f = open('{}{}.csv'.format(title, chapter), 'w', encoding='utf-8-sig', newline='')
+#     for i in article_list:
+#         same_verse = soup.select('#v18-6-1-1')
+#         temp = []
+#         if article_list.index(i) == 0:
+#             data_list = temp + ([title, chapter, verse, i.get_text()[len(str(chapter)):]])
+#         else:
+#             data_list = temp + ([title, chapter, verse, i.get_text()[len(str(verse)):]])
+#         wr = csv.writer(f)
+#         wr.writerow(data_list)
+
+
 #     for i in article_list:
 #         verse = article_list.index(i)+1
 #         temp = []
@@ -56,14 +89,14 @@ current_link = driver.current_url
 
 # verse_scraping()
 
-book_list = range(len(driver.find_elements_by_class_name('bookLink')))
-# back = driver.find_elements_by_class_name('#article > article > div > nav > div > header > a > span.contextTtl').click()
+# book_list = range(len(driver.find_elements_by_class_name('bookLink')))
+# # back = driver.find_elements_by_class_name('#article > article > div > nav > div > header > a > span.contextTtl').click()
 
-print (book_list)
-for i in book_list:
-    bible_start = driver.find_elements_by_class_name('bookLink')[i].click()
-    time.sleep(3)
-    back = driver.find_element_by_css_selector('#article > article > div > nav > div > header > a > span.contextTtl').click()
-    time.sleep(3)
+# print (book_list)
+# for i in book_list:
+#     bible_start = driver.find_elements_by_class_name('bookLink')[i].click()
+#     time.sleep(3)
+#     back = driver.find_element_by_css_selector('#article > article > div > nav > div > header > a > span.contextTtl').click()
+#     time.sleep(3)
 
 
