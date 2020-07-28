@@ -16,7 +16,7 @@ driver.implicitly_wait(3)
 
 
 # url에 접근한다.
-driver.get('https://wol.jw.org/ko/wol/b/r8/lp-ko/nwtsty/19/31#s=23&study=discover')
+driver.get('https://wol.jw.org/ko/wol/b/r8/lp-ko/nwt/2/1')
 #driver.get('https://wol.jw.org/en')
 
 
@@ -36,21 +36,33 @@ soup = BeautifulSoup(html, 'html.parser')
 
 
 
-verse_all = driver.find_elements_by_css_selector('#article > article')
-f = open('{title}{chapter}.csv', 'w', encoding='utf-8-sig', newline='')
-for i in verse_all:
-    # i.text.replace('+', '').replace('*', '')
-    temp = []
-    if verse_all.index(i) == 0:
-        data_list = temp + ([i.text])
-    else:
-        data_list = temp + ([i.text])
-    wr = csv.writer(f)
-    wr.writerow(data_list)
-f.close()
 
 
-# print (verse_all.string.text)
+def verse_scraping():
+    #현재 링크 확인
+    current_link = driver.current_url
+
+    req = requests.get(current_link)
+    html = req.text 
+    soup = BeautifulSoup(html, 'html.parser')
+    title = driver.find_elements_by_css_selector('#article > article > header > h1')[0].text.strip()
+    chapter = soup.select('a.cl > strong')[0].get_text()
+    article_list = soup.select('p > span')[6:]
+
+    f = open('{}{}.csv'.format(title, chapter), 'w', encoding='utf-8-sig', newline='')
+    for i in article_list:
+        verse = article_list.index(i)+1
+        # temp = []
+        data_list =[title, chapter, verse, i.get_text().replace('+', '').replace('*', '')]
+        # if article_list.index(i) == 0:
+        #     data_list = temp + ([title, chapter, verse, i.get_text().replace('+', '').replace('*', '')[len(str(chapter)):]])
+        # else:
+        #     data_list = temp + ([title, chapter, verse, i.get_text().replace('+', '').replace('*', '')[len(str(verse)):]])
+        wr = csv.writer(f)
+        wr.writerow(data_list)
+    f.close()
+
+verse_scraping()
 
 
 # def verse_scraping():
