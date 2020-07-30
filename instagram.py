@@ -16,7 +16,7 @@ driver.implicitly_wait(3)
 
 
 # url에 접근한다.
-driver.get('https://www.instagram.com/udtbro')
+driver.get('https://www.instagram.com/xxxibgdrgn')
 #driver.get('https://wol.jw.org/en')
 
 
@@ -42,6 +42,9 @@ start = '"edge_follow":{"count":'
 end = '},"follows_viewer"'
 following= r[r.find(start)+len(start):r.rfind(end)]
 
-print(followers, following)
+text_verified = 'Verified'
+isVerified = r[r.find(text_verified)]
+
+print(followers, following, )
 
 
